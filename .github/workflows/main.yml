@@ -1,7 +1,8 @@
 name: MasterDeployCI
+
 on:
   release:
-    branches: [ master ]
+    types: [published]
     
 jobs:
   build:
