@@ -2,7 +2,7 @@ name: MasterDeployCI
 
 on:
   release:
-    branch: [master]
+    types: [published]
     
 jobs:
   build:
