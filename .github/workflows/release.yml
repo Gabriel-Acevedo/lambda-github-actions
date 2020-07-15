@@ -7,7 +7,8 @@ on:
       - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
 
 jobs:
-  build:
+
+  release_version:
     name: Create Release
     runs-on: ubuntu-latest
     steps:
@@ -16,6 +17,7 @@ jobs:
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
+        run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
@@ -23,3 +25,16 @@ jobs:
           release_name: Release ${{ github.ref }}
           draft: false
           prerelease: false
+
+  zip_files:
+    name: Zip source code
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+    - name: Zip Folder
+      run: zip -r release-${version}.zip . -x ".git/*" ".github/*"
+      with:
+        version: ${{ steps.get_version.outputs.VERSION }}
+    - name: Release to Github
+      run: echo "Release"
